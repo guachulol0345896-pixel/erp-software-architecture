@@ -1,220 +1,119 @@
----
-date: Enero 2023
-title: Plantilla ![arc42](images/arc42-logo.png)
----
+Introducción y Metas {#section-introduction-and-goals}
 
-# 
+Este documento describe la arquitectura del Sistema ERP, enfocado en el Módulo de Compras, que gestiona los procesos de negocio relacionados con productos, proveedores y órdenes de compra de la empresa.
 
-**Acerca de arc42**
+Vista de Requerimientos {#_vista_de_requerimientos}
 
-arc42, La plantilla de documentación para arquitectura de sistemas y de
-software.
+Requisitos de negocio más importantes del Módulo de Compras:
 
-Por Dr. Gernot Starke, Dr. Peter Hruschka y otros contribuyentes.
+Mantener un catálogo de productos con su información básica (nombre, descripción, unidad).
+Registrar proveedores y asociarlos a los productos que ofrecen.
+Generar órdenes de compra a partir de necesidades de reabastecimiento.
+Permitir aprobación o rechazo de las órdenes de compra generadas.
+Registrar la recepción de mercancía y actualizar el inventario correspondiente.
+Metas de Calidad {#_metas_de_calidad}
+Prioridad	Atributo de calidad	Motivación
+1	Usabilidad	El personal que usa el sistema no necesariamente tiene formación técnica.
+2	Disponibilidad	El sistema debe estar disponible durante el horario de operación del negocio.
+3	Trazabilidad	Cada movimiento de compras e inventario debe quedar registrado para auditoría.
+Partes interesadas (Stakeholders) {#_partes_interesadas_stakeholders}
 
-Revisión de la plantilla: 7.0 ES (basada en asciidoc), Enero 2017
++-------------+---------------------------+---------------------------+ | Rol/Nombre | Contacto | Expectativas | +=============+===========================+===========================+ | Administrador de Compras | Encargado del área de compras | Gestionar productos, proveedores y órdenes de compra de forma ágil. | +-------------+---------------------------+---------------------------+ | Administrador del negocio | Dirección de la empresa | Visibilidad y control sobre el gasto en compras. | +-------------+---------------------------+---------------------------+
 
-© Reconocemos que este documento utiliza material de la plantilla de
-arquitectura arc42, <https://www.arc42.org>. Creada por Dr. Peter
-Hruschka y Dr. Gernot Starke.
+Restricciones de la Arquitectura {#section-architecture-constraints}
 
-# Introducción y Metas {#section-introduction-and-goals}
+Restricciones técnicas
 
-## Vista de Requerimientos {#_vista_de_requerimientos}
+Frontend: Single-Page Application (JavaScript, React).
+Backend: API Monolítica (Java, Spring Boot).
+Base de datos: PostgreSQL.
+Modelado y diagramas: PlantUML, siguiendo la notación C4 (Contexto y Contenedores).
+Control de versiones: GitHub (repositorio erp-software-architecture).
+Gestión del backlog: Notion (tablero Kanban).
 
-## Metas de Calidad {#_metas_de_calidad}
+Restricciones organizacionales
 
-## Partes interesadas (Stakeholders) {#_partes_interesadas_stakeholders}
+Proyecto desarrollado de forma individual en el marco de un curso académico.
+Duración limitada al semestre académico.
+Alcance y Contexto del Sistema {#section-context-and-scope}
+Contexto de Negocio {#_contexto_de_negocio}
 
-+-------------+---------------------------+---------------------------+
-| Rol/Nombre  | Contacto                  | Expectativas              |
-+=============+===========================+===========================+
-| *           | *\<Contact-1\>*           | *\<Expectation-1\>*       |
-| \<Role-1\>* |                           |                           |
-+-------------+---------------------------+---------------------------+
-| *           | *\<Contact-2\>*           | *\<Expectation-2\>*       |
-| \<Role-2\>* |                           |                           |
-+-------------+---------------------------+---------------------------+
+Mostrar imagen
 
-# Restricciones de la Arquitectura {#section-architecture-constraints}
+El Administrador de Compras registra productos y proveedores en el Sistema ERP.
+El Sistema ERP envía datos de facturas y asientos contables a un Sistema Contable Externo.
+Contexto Técnico {#_contexto_técnico}
 
-# Alcance y Contexto del Sistema {#section-context-and-scope}
+El sistema se expone como una aplicación web accesible por HTTPS. La comunicación con el Sistema Contable Externo se realiza mediante el envío de datos de facturación y asientos contables.
 
-## Contexto de Negocio {#_contexto_de_negocio}
+Estrategia de solución {#section-solution-strategy}
 
-**\<Diagrama o Tabla\>**
+Se optó por una arquitectura de aplicación web monolítica, compuesta por una Single-Page Application (React) que consume una API Monolítica (Java, Spring Boot), la cual centraliza toda la lógica de negocio y se conecta a una base de datos relacional (PostgreSQL). Esta estrategia es adecuada para el alcance de un MVP, priorizando simplicidad de despliegue sobre la escalabilidad de una arquitectura distribuida.
 
-**\<optionally: Explanation of external domain interfaces\>**
+Vista de Bloques {#section-building-block-view}
+Sistema General de Caja Blanca {#_sistema_general_de_caja_blanca}
 
-## Contexto Técnico {#_contexto_técnico}
+Mostrar imagen
 
-**\<Diagrama o Tabla\>**
+Motivación : Separar la interfaz de usuario, la lógica de negocio y la persistencia en capas claras.
 
-**\<Opcional: Explicación de las interfases técnicas\>**
+Bloques de construcción contenidos : Single-Page Application, API Monolítica, Base de Datos.
 
-**\<Mapeo de Entrada/Salida a canales\>**
+Interfases importantes : HTTPS entre el usuario y la SPA; HTTPS/JSON entre la SPA y la API; JDBC entre la API y la base de datos.
 
-# Estrategia de solución {#section-solution-strategy}
+Single-Page Application {#_caja_negra_1}
 
-# Vista de Bloques {#section-building-block-view}
+Propósito/Responsabilidad: interfaz de usuario en el navegador, construida en JavaScript con React.
 
-## Sistema General de Caja Blanca {#_sistema_general_de_caja_blanca}
+API Monolítica {#_caja_negra_2}
 
-***\<Diagrama general\>***
+Propósito/Responsabilidad: maneja toda la lógica de negocio del módulo de Compras (Java, Spring Boot).
 
-Motivación
+Base de Datos {#_caja_negra_n}
 
-:   *\<Explicación en texto\>*
+Propósito/Responsabilidad: almacena todos los datos del ERP (PostgreSQL).
 
-Bloques de construcción contenidos
+Vista de Ejecución {#section-runtime-view}
+Escenario: Registrar un producto nuevo {#_escenario_de_ejecución_1}
 
-:   *\<Desripción de los bloques de construcción contenidos (Cajas
-    negras)\>*
+Mostrar imagen
 
-Interfases importantes
+Este escenario corresponde a la historia de usuario "Como gestor de inventario, quiero registrar nuevos productos...".
 
-:   *\<Descripción de las interfases importantes\>*
+El administrador rellena y envía el formulario de nuevo producto desde la SPA.
+La SPA envía una petición POST /api/productos a la API con los datos del producto.
+La API valida los datos recibidos.
+La API ejecuta un INSERT INTO productos en la base de datos.
+La base de datos confirma la creación del producto con su ID.
+La API responde 201 Created con el producto creado.
+La SPA muestra un mensaje de éxito y actualiza la lista de productos.
+Vista de Despliegue {#section-deployment-view}
 
-### \<Caja Negra 1\> {#_caja_negra_1}
+(Opcional — no desarrollado en esta fase del taller)
 
-*\<Propósito/Responsabilidad\>*
+Conceptos Transversales (Cross-cutting) {#section-concepts}
+Modelo de datos del módulo de Compras {#_concepto_1}
 
-*\<Interfase(s)\>*
+Mostrar imagen
 
-*\<(Opcional) Características de Calidad/Performance\>*
+Las entidades principales del módulo son Producto, Proveedor, y Producto_Proveedor (relación muchos-a-muchos entre productos y proveedores, con el precio unitario que cada proveedor ofrece por producto).
 
-*\<(Opcional) Ubicación Archivo/Directorio\>*
+Decisiones de Diseño {#section-design-decisions}
 
-*\<(Opcional) Requerimientos Satisfechos\>*
+Se decidió separar la interfaz (SPA) de la lógica de negocio (API Monolítica) para permitir que ambas capas evolucionen de forma independiente, a costa de una mayor complejidad de despliegue frente a una aplicación monolítica de servidor tradicional.
 
-*\<(Opcional) Riesgos/Problemas/Incidentes Abiertos\>*
+Requerimientos de Calidad {#section-quality-scenarios}
+Árbol de Calidad {#_árbol_de_calidad}
 
-### \<Caja Negra 2\> {#_caja_negra_2}
+Usabilidad > Disponibilidad > Trazabilidad (ver tabla de Metas de Calidad en la sección de Introducción).
 
-*\<plantilla de caja negra\>*
+Escenarios de calidad {#_escenarios_de_calidad}
 
-### \<Caja Negra N\> {#_caja_negra_n}
+(No desarrollado en detalle en esta fase del taller)
 
-*\<Plantilla de caja negra\>*
+Riesgos y deuda técnica {#section-technical-risks}
+No se ha implementado aún autenticación/autorización por roles.
+La vista de despliegue no está desarrollada en detalle en esta fase.
+Glosario {#section-glossary}
 
-### \<Interfase 1\> {#_interfase_1}
-
-...​
-
-### \<Interfase m\> {#_interfase_m}
-
-## Nivel 2 {#_nivel_2}
-
-### Caja Blanca *\<bloque de construcción 1\>* {#_caja_blanca_bloque_de_construcción_1}
-
-*\<plantilla de caja blanca\>*
-
-### Caja Blanca *\<bloque de construcción 2\>* {#_caja_blanca_bloque_de_construcción_2}
-
-*\<plantilla de caja blanca\>*
-
-...​
-
-### Caja Blanca *\<bloque de construcción m\>* {#_caja_blanca_bloque_de_construcción_m}
-
-*\<plantilla de caja blanca\>*
-
-## Nivel 3 {#_nivel_3}
-
-### Caja Blanca \<\_bloque de construcción x.1\_\> {#_caja_blanca_bloque_de_construcción_x_1}
-
-*\<plantilla de caja blanca\>*
-
-### Caja Blanca \<\_bloque de construcción x.2\_\> {#_caja_blanca_bloque_de_construcción_x_2}
-
-*\<plantilla de caja blanca\>*
-
-### Caja Blanca \<\_bloque de construcción y.1\_\> {#_caja_blanca_bloque_de_construcción_y_1}
-
-*\<plantilla de caja blanca\>*
-
-# Vista de Ejecución {#section-runtime-view}
-
-## \<Escenario de ejecución 1\> {#_escenario_de_ejecución_1}
-
--   *\<Inserte un diagrama de ejecución o la descripción del
-    escenario\>*
-
--   *\<Inserte la descripción de aspectos notables de las interacciones
-    entre los bloques de construcción mostrados en este diagrama.\>*
-
-## \<Escenario de ejecución 2\> {#_escenario_de_ejecución_2}
-
-## ...​
-
-## \<Escenario de ejecución n\> {#_escenario_de_ejecución_n}
-
-# Vista de Despliegue {#section-deployment-view}
-
-## Nivel de infraestructura 1 {#_nivel_de_infraestructura_1}
-
-***\<Diagrama General\>***
-
-Motivación
-
-:   *\<Explicación en forma textual\>*
-
-Características de Calidad/Rendimiento
-
-:   *\<Explicación en forma textual\>*
-
-    Mapeo de los Bloques de Construcción a Infraestructura
-
-    :   *\<Descripción del mapeo\>*
-
-## Nivel de Infraestructura 2 {#_nivel_de_infraestructura_2}
-
-### *\<Elemento de Infraestructura 1\>* {#_elemento_de_infraestructura_1}
-
-*\<diagrama + explicación\>*
-
-### *\<Elemento de Infraestructura 2\>* {#_elemento_de_infraestructura_2}
-
-*\<diagrama + explicación\>*
-
-...​
-
-### *\<Elemento de Infraestructura n\>* {#_elemento_de_infraestructura_n}
-
-*\<diagrama + explicación\>*
-
-# Conceptos Transversales (Cross-cutting) {#section-concepts}
-
-## *\<Concepto 1\>* {#_concepto_1}
-
-*\<explicación\>*
-
-## *\<Concepto 2\>* {#_concepto_2}
-
-*\<explicación\>*
-
-...​
-
-## *\<Concepto n\>* {#_concepto_n}
-
-*\<explicación\>*
-
-# Decisiones de Diseño {#section-design-decisions}
-
-# Requerimientos de Calidad {#section-quality-scenarios}
-
-## Árbol de Calidad {#_árbol_de_calidad}
-
-## Escenarios de calidad {#_escenarios_de_calidad}
-
-# Riesgos y deuda técnica {#section-technical-risks}
-
-# Glosario {#section-glossary}
-
-+----------------------+-----------------------------------------------+
-| Término              | Definición                                    |
-+======================+===============================================+
-| *\<Término-1\>*      | *\<definicion-1\>*                            |
-+----------------------+-----------------------------------------------+
-| *\<Término-2\>*      | *\<definicion-2\>*                            |
-+----------------------+-----------------------------------------------+
++----------------------+-----------------------------------------------+ | Término | Definición | +======================+=================================================+ | Producto | Artículo del catálogo gestionado por el módulo de Compras. | +----------------------+-----------------------------------------------+ | Proveedor | Empresa externa que suministra productos, identificada por razón social y datos de contacto. | +----------------------+-----------------------------------------------+ | Orden de Compra | Documento que formaliza la solicitud de productos a un proveedor. | +----------------------+-----------------------------------------------+ | MVP | Minimum Viable Product: versión mínima funcional del sistema. | +----------------------+-----------------------------------------------+ | C4 Model | Notación de diagramas de arquitectura por niveles: Contexto, Contenedores, Componentes y Código. | +----------------------+-----------------------------------------------+
