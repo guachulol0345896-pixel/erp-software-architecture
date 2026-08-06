@@ -38,7 +38,7 @@ Duración limitada al semestre académico.
 Alcance y Contexto del Sistema {#section-context-and-scope}
 Contexto de Negocio {#_contexto_de_negocio}
 
-Mostrar imagen
+![Diagrama de Contexto](./c1.png)
 
 El Administrador de Compras registra productos y proveedores en el Sistema ERP.
 El Sistema ERP envía datos de facturas y asientos contables a un Sistema Contable Externo.
@@ -53,7 +53,7 @@ Se optó por una arquitectura de aplicación web monolítica, compuesta por una 
 Vista de Bloques {#section-building-block-view}
 Sistema General de Caja Blanca {#_sistema_general_de_caja_blanca}
 
-Mostrar imagen
+![Diagrama de Contenedores](./plantuml.png)
 
 Motivación : Separar la interfaz de usuario, la lógica de negocio y la persistencia en capas claras.
 
@@ -76,7 +76,7 @@ Propósito/Responsabilidad: almacena todos los datos del ERP (PostgreSQL).
 Vista de Ejecución {#section-runtime-view}
 Escenario: Registrar un producto nuevo {#_escenario_de_ejecución_1}
 
-Mostrar imagen
+![Diagrama de Secuencia](./datos.png)
 
 Este escenario corresponde a la historia de usuario "Como gestor de inventario, quiero registrar nuevos productos...".
 
@@ -94,7 +94,7 @@ Vista de Despliegue {#section-deployment-view}
 Conceptos Transversales (Cross-cutting) {#section-concepts}
 Modelo de datos del módulo de Compras {#_concepto_1}
 
-Mostrar imagen
+![Diagrama Entidad-Relación](./producto.png)
 
 Las entidades principales del módulo son Producto, Proveedor, y Producto_Proveedor (relación muchos-a-muchos entre productos y proveedores, con el precio unitario que cada proveedor ofrece por producto).
 
